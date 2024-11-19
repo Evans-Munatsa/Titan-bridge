@@ -5,20 +5,25 @@ import * as SignIn from "@clerk/elements/sign-in";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { type } from "os";
 import { useEffect } from "react";
 
 const LoginPage = () => {
   const { isLoaded, isSignedIn, user } = useUser();
-
+  // console.log(user, "This i sithe user")
   const router = useRouter();
 
   useEffect(() => {
-    const role = user?.publicMetadata.role;
+    if(isLoaded && user) {
+      const role = user?.publicMetadata.role;
 
-    if (role) {
-      router.push(`/${role}`);
+      if (role && typeof role === 'string') {
+        console.log(role, "this is the admin")
+
+        router.push(`/${role.toLocaleLowerCase()}`);
+      }
     }
-  }, [user, router]);
+  }, [isLoaded, user, router]);
 
   return (
     <div className="h-screen flex items-center justify-center bg-lamaSkyLight">
@@ -29,7 +34,7 @@ const LoginPage = () => {
         >
           <h1 className="text-xl font-bold flex items-center gap-2">
             <Image src="/logo.png" alt="" width={24} height={24} />
-            SchooLama
+            Maitland High Portal
           </h1>
           <h2 className="text-gray-400">Sign in to your account</h2>
           <Clerk.GlobalError className="text-sm text-red-400" />
